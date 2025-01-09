@@ -36,22 +36,27 @@ CREATE NONCLUSTERED INDEX [IX_Address_City] ON [SalesLT].[Address]
 [City] ASC
 )
 GO
+
 SELECT *
 FROM SalesLT.Address A
 CROSS JOIN SalesLT.Address B
+
 SELECT H.CustomerID, H.SalesOrderID, D.OrderQty
 FROM SalesLT.SalesOrderHeader H
 INNER JOIN SalesLT.SalesOrderDetail D
 ON H.SalesOrderID = D.SalesOrderID
+
 SELECT *
 INTO [SalesLT].[SalesOrderDetailCopy]
 from [SalesLT].[SalesOrderDetail]
 SELECT *
 INTO [SalesLT].[SalesOrderHeaderCopy]
 from [SalesLT].[SalesOrderHeader]
+
 SELECT H.CustomerID, H.SalesOrderID, D.OrderQty
 FROM SalesLT.SalesOrderHeaderCopy H
 INNER JOIN SalesLT.SalesOrderDetailCopy DON H.SalesOrderID = D.SalesOrderID
+
 SELECT COUNT(*)
 FROM [SalesLT].[SalesOrderHeaderCopy]
 INSERT INTO [SalesLT].[SalesOrderHeaderCopy]
@@ -61,24 +66,20 @@ FROM [SalesLT].[SalesOrderHeaderCopy] as H1
 
 ###  Problems in execution plans
 
-SELECT City FROM SalesLT.Address
-where YEAR(ModifiedDate) = 2006 -- Not SARGable
+SELECT City FROM SalesLT.Address where YEAR(ModifiedDate) = 2006 -- Not SARGable
+
 CREATE NONCLUSTERED INDEX IX_Address_Modified ON SalesLT.Address(ModifiedDate,City)
-SELECT City FROM SalesLT.Address
-WHERE ModifiedDate BETWEEN '2006-01-01' and '2006-12-31 23:59:59' –SARGable
+SELECT City FROM SalesLT.Address WHERE ModifiedDate BETWEEN '2006-01-01' and '2006-12-31 23:59:59' –SARGable
+
 create proc NameOfProc (@Year int) WITH RECOMPILE as
 SELECT * FROM SalesLT.Address
 WHERE ModifiedDate BETWEEN '2006-01-01' and '2006-12-31 23:59:59' --SARGable
 order by ModifiedDate
 OPTION (RECOMPILE)
 
-SELECT * FROM SalesLT.Address
-WHERE LEFT(AddressLine1,1) = '8' -- Not SARGable
-SELECT * FROM SalesLT.Address
-WHERE AddressLine1 LIKE '8%' – SARGable
-SELECT LEN(AddressLine1)
-FROM SalesLT.Address
-order by LEN(AddressLine1)
+SELECT * FROM SalesLT.Address WHERE LEFT(AddressLine1,1) = '8' -- Not SARGable
+SELECT * FROM SalesLT.Address WHERE AddressLine1 LIKE '8%' – SARGable
+SELECT LEN(AddressLine1) FROM SalesLT.Address order by LEN(AddressLine1)
 
 
 ####  Index changes
@@ -88,39 +89,34 @@ WHERE [City] = 'Bothell'
 WITH (FILLFACTOR = 62)
 
 ####  Finding missing index
+
 SELECT H.CustomerID, H.SalesOrderID, D.OrderQty
 FROM SalesLT.SalesOrderHeaderCopy H
 INNER JOIN SalesLT.SalesOrderDetailCopy D
 ON H.SalesOrderID = D.SalesOrderID
+
 select count(*) from [SalesLT].[SalesOrderHeaderCopy]
 insert into [SalesLT].[SalesOrderHeaderCopy]
 select H1.*
 from [SalesLT].[SalesOrderHeaderCopy] as H1
+
 select * from sys.dm_db_missing_index_details
-SELECT
-CONVERT (varchar, getdate(), 126) AS runtime
-, mig.index_group_handle
-, mid.index_handle
-, CONVERT (decimal (28,1), migs.avg_total_user_cost * migs.avg_user_impact *
+
+SELECT CONVERT (varchar, getdate(), 126) AS runtime, mig.index_group_handle, mid.index_handle, CONVERT (decimal (28,1), migs.avg_total_user_cost * migs.avg_user_impact *
 (migs.user_seeks + migs.user_scans)) AS improvement_measure, 'CREATE INDEX missing_index_' + CONVERT (varchar, mig.index_group_handle) + '_' +
 CONVERT (varchar, mid.index_handle) + ' ON ' + mid.statement + '
-(' + ISNULL (mid.equality_columns,'')
-+ CASE WHEN mid.equality_columns IS NOT NULL
+(' + ISNULL (mid.equality_columns,'')+ CASE WHEN mid.equality_columns IS NOT NULL
 AND mid.inequality_columns IS NOT NULL
 THEN ',' ELSE '' END + ISNULL (mid.inequality_columns, '') + ')'
-+ ISNULL (' INCLUDE (' + mid.included_columns + ')', '') AS
-
-## create_index_statement
-, migs.*
-, mid.database_id
-, mid.[object_id]
++ ISNULL (' INCLUDE (' + mid.included_columns + ')', '') AS create_index_statement
+, migs.*, mid.database_id, mid.[object_id]
 FROM sys.dm_db_missing_index_groups AS mig
 INNER JOIN sys.dm_db_missing_index_group_stats AS migs
 ON migs.group_handle = mig.index_group_handle
 INNER JOIN sys.dm_db_missing_index_details AS mid
 ON mig.index_handle = mid.index_handle
-ORDER BY migs.avg_total_user_cost * migs.avg_user_impact * (migs.user_seeks +
-migs.user_scans) DESC
+ORDER BY migs.avg_total_user_cost * migs.avg_user_impact * (migs.user_seeks +migs.user_scans) DESC
+
 ###  Assess the use of hints for query performance
 SELECT H.CustomerID, H.SalesOrderID, D.OrderQty
 FROM SalesLT.SalesOrderHeaderCopy H
