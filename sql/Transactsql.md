@@ -1,4 +1,4 @@
-# The SELECT statement
+### The SELECT statement
 SELECT CountryRegion, COUNT(*) as NumberOfRows
 FROM [SalesLT].[Address]
 WHERE ModifiedDate < '2010-01-01'
@@ -13,14 +13,15 @@ ON D.SalesOrderID = H.SalesOrderID
 Data Types
 SELECT N'Hi'
 
-# Determine the appropriate type of execution plan
+### Determine the appropriate type of execution plan
 SET SHOWPLAN_TEXT OFF
 GO
 SELECT *
 FROM SalesLT.Address A
 CROSS JOIN SalesLT.Address B
 
-#  Loops and Scans
+###  Loops and Scans
+
 SELECT * FROM SalesLT.Address
 where City = 'Washington'
 CREATE NONCLUSTERED INDEX [IX_Address_City] ON [SalesLT].[Address]
@@ -51,7 +52,8 @@ SELECT H1.*
 FROM [SalesLT].[SalesOrderHeaderCopy] as H1
 
 
-#  Problems in execution plans
+###  Problems in execution plans
+
 SELECT City FROM SalesLT.Address
 where YEAR(ModifiedDate) = 2006 -- Not SARGable
 CREATE NONCLUSTERED INDEX IX_Address_Modified ON SalesLT.Address(ModifiedDate,City)
@@ -62,6 +64,7 @@ SELECT * FROM SalesLT.Address
 WHERE ModifiedDate BETWEEN '2006-01-01' and '2006-12-31 23:59:59' --SARGable
 order by ModifiedDate
 OPTION (RECOMPILE)
+
 SELECT * FROM SalesLT.Address
 WHERE LEFT(AddressLine1,1) = '8' -- Not SARGable
 SELECT * FROM SalesLT.Address
@@ -71,12 +74,13 @@ FROM SalesLT.Address
 order by LEN(AddressLine1)
 
 
-#  Index changes
+####  Index changes
 CREATE NONCLUSTERED INDEX ix_Address_AddressLine1_AddressLine2
 ON [SalesLT].[Address](AddressLine1, AddressLine2)
 WHERE [City] = 'Bothell'
 WITH (FILLFACTOR = 62)
-#  Finding missing index
+
+####  Finding missing index
 SELECT H.CustomerID, H.SalesOrderID, D.OrderQty
 FROM SalesLT.SalesOrderHeaderCopy H
 INNER JOIN SalesLT.SalesOrderDetailCopy D
@@ -98,7 +102,8 @@ CONVERT (varchar, mid.index_handle) + ' ON ' + mid.statement + '
 AND mid.inequality_columns IS NOT NULL
 THEN ',' ELSE '' END + ISNULL (mid.inequality_columns, '') + ')'
 + ISNULL (' INCLUDE (' + mid.included_columns + ')', '') AS
-create_index_statement
+
+## create_index_statement
 , migs.*
 , mid.database_id
 , mid.[object_id]
@@ -109,14 +114,14 @@ INNER JOIN sys.dm_db_missing_index_details AS mid
 ON mig.index_handle = mid.index_handle
 ORDER BY migs.avg_total_user_cost * migs.avg_user_impact * (migs.user_seeks +
 migs.user_scans) DESC
-#  Assess the use of hints for query performance
+###  Assess the use of hints for query performance
 SELECT H.CustomerID, H.SalesOrderID, D.OrderQty
 FROM SalesLT.SalesOrderHeaderCopy H
 INNER JOIN SalesLT.SalesOrderDetailCopy D
 ON H.SalesOrderID = D.SalesOrderID
 OPTION (LOOP JOIN)
 
-#  Create users from Azure AD identities
+###  Create users from Azure AD identities
 CREATE USER [Susan@Filecats.onmicrosoft.com]
 FROM EXTERNAL PROVIDER
 25, 113. Configure security principals
