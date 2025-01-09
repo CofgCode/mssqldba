@@ -5,7 +5,8 @@ WHERE ModifiedDate < '2010-01-01'
 GROUP BY CountryRegion
 HAVING COUNT(*)>100
 ORDER BY CountryRegion DESC
-JOINing two tables together
+  
+--JOINing two tables together
 SELECT H.SalesOrderID, OrderDate, OrderQty
 FROM [SalesLT].[SalesOrderDetail] AS D
 JOIN [SalesLT].[SalesOrderHeader] AS H
@@ -33,17 +34,19 @@ FROM SalesLT.Address A
 CROSS JOIN SalesLT.Address B
 SELECT H.CustomerID, H.SalesOrderID, D.OrderQty
 FROM SalesLT.SalesOrderHeader H
-INNER JOIN SalesLT.SalesOrderDetail D
-ON H.SalesOrderID = D.SalesOrderID
+INNER JOIN SalesLT.SalesOrderDetail D ON H.SalesOrderID = D.SalesOrderID
+  
 SELECT *
 INTO [SalesLT].[SalesOrderDetailCopy]
 from [SalesLT].[SalesOrderDetail]
+  
 SELECT *
 INTO [SalesLT].[SalesOrderHeaderCopy]
 from [SalesLT].[SalesOrderHeader]
 SELECT H.CustomerID, H.SalesOrderID, D.OrderQty
 FROM SalesLT.SalesOrderHeaderCopy H
 INNER JOIN SalesLT.SalesOrderDetailCopy DON H.SalesOrderID = D.SalesOrderID
+  
 SELECT COUNT(*)
 FROM [SalesLT].[SalesOrderHeaderCopy]
 INSERT INTO [SalesLT].[SalesOrderHeaderCopy]
@@ -57,11 +60,13 @@ where YEAR(ModifiedDate) = 2006 -- Not SARGable
 CREATE NONCLUSTERED INDEX IX_Address_Modified ON SalesLT.Address(ModifiedDate,City)
 SELECT City FROM SalesLT.Address
 WHERE ModifiedDate BETWEEN '2006-01-01' and '2006-12-31 23:59:59' –SARGable
+
 create proc NameOfProc (@Year int) WITH RECOMPILE as
 SELECT * FROM SalesLT.Address
 WHERE ModifiedDate BETWEEN '2006-01-01' and '2006-12-31 23:59:59' --SARGable
 order by ModifiedDate
 OPTION (RECOMPILE)
+  
 SELECT * FROM SalesLT.Address
 WHERE LEFT(AddressLine1,1) = '8' -- Not SARGable
 SELECT * FROM SalesLT.Address
@@ -76,11 +81,13 @@ CREATE NONCLUSTERED INDEX ix_Address_AddressLine1_AddressLine2
 ON [SalesLT].[Address](AddressLine1, AddressLine2)
 WHERE [City] = 'Bothell'
 WITH (FILLFACTOR = 62)
+
 #  Finding missing index
 SELECT H.CustomerID, H.SalesOrderID, D.OrderQty
 FROM SalesLT.SalesOrderHeaderCopy H
 INNER JOIN SalesLT.SalesOrderDetailCopy D
 ON H.SalesOrderID = D.SalesOrderID
+
 select count(*) from [SalesLT].[SalesOrderHeaderCopy]
 insert into [SalesLT].[SalesOrderHeaderCopy]
 select H1.*
@@ -196,6 +203,7 @@ FROM CHANGETABLE(CHANGES SalesLT.Address, 0) AS CT
 -- Check that you don’t have to refresh the entire table:
 SELECT @last_sync >= CHANGE_TRACKING_MIN_VALID_VERSION(OBJECT_ID('SalesLT.Address'))
 -- 80 90
+  
 #  Implement Data Change Tracking - CDC
 -- Enable for database
 EXEC sys.sp_cdc_enable_db
@@ -206,18 +214,24 @@ EXEC sys.sp_cdc_enable_table @source_schema = 'SalesLT', @source_name = 'Address
 -- What is my configuration?
 EXECUTE sys.sp_cdc_help_change_data_capture
 -- Update row
+  
 SELECT * FROM [SalesLT].[Address] WHERE AddressID = 9
 UPDATE [SalesLT].[Address]
 SET City = 'Bothell'
 WHERE AddressID = 9
--- What are the changed rows?DECLARE @from_lsn binary(10), @to_lsn binary(10);
+-- What are the changed rows?
+
+DECLARE @from_lsn binary(10), @to_lsn binary(10);
 SET @from_lsn = sys.fn_cdc_get_min_lsn('SalesLT_Address');
 SET @to_lsn = sys.fn_cdc_get_max_lsn();
 SELECT * FROM cdc.fn_cdc_get_all_changes_SalesLT_Address (@from_lsn, @to_lsn, N'all');
+
 -- Disable from table
+
 EXEC sys.sp_cdc_disable_table @source_schema = 'SalesLT', @source_name = 'Address',
 @capture_instance = 'all'
--- Disable for database
+
+  -- Disable for database
 EXEC sys.sp_cdc_disable_db
 #  Configure and monitor activity and performance
 EXEC sp_who -- current users/processes
@@ -240,15 +254,13 @@ FROM sys.dm_db_column_store_row_group_physical_stats
 ALTER INDEX ALL
 ON [SalesLT].[Address]
 REORGANIZE
-ALTER INDEX [PK_Customer_CustomerID]
-ON [SalesLT].[Customer]
-REBUILD WITH (ONLINE = ON,
-FILLFACTOR = 70,
-MAX_DURATION = 30,
-RESUMABLE = ON)
-ALTER INDEX [PK_Customer_CustomerID]
-ON [SalesLT].[Customer]
-PAUSE -- or ABORT or RESUME44. Implement statistics maintenance tasks
+ALTER INDEX [PK_Customer_CustomerID] ON [SalesLT].[Customer]
+REBUILD WITH (ONLINE = ON,FILLFACTOR = 70,MAX_DURATION = 30,RESUMABLE = ON)
+  
+ALTER INDEX [PK_Customer_CustomerID] ON [SalesLT].[Customer]
+--
+
+44. Implement statistics maintenance tasks
 -- Update all user-defined and internal tables
 EXEC sp_updatestats
 -- Update a particular table or indexed view
@@ -257,11 +269,13 @@ WITH FULLSCAN
 --WITH SAMPLE 10 PERCENT
 --WITH RESAMPLE
 --, PERSIST_SAMPLE_PERCENT = ON
-#  Configure database auto-tuning
+
+  #  Configure database auto-tuning
 -- Which indexes are auto-created?
 SELECT * FROM sys.indexes
 WHERE auto_created = 1
--- Change database auto-tuning
+
+  -- Change database auto-tuning
 ALTER DATABASE [DP300] SET AUTOMATIC_TUNING = AUTO --| INHERIT | CUSTOM
 ALTER DATABASE [DP300] SET AUTOMATIC_TUNING (FORCE_LAST_GOOD_PLAN = ON, CREATE_INDEX =
 ON, DROP_INDEX = OFF)
