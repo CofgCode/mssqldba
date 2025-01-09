@@ -9,7 +9,7 @@ HAVING COUNT(*)>100
 ORDER BY CountryRegion DESC
 ```
 
-###JOINing two tables together
+### JOINing two tables together
 
 ```
 SELECT H.SalesOrderID, OrderDate, OrderQty
