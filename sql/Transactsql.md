@@ -1,17 +1,21 @@
 ### The SELECT statement
-SELECT CountryRegion, COUNT(*) as NumberOfRows
+
+```SELECT CountryRegion, COUNT(*) as NumberOfRows
 FROM [SalesLT].[Address]
 WHERE ModifiedDate < '2010-01-01'
 GROUP BY CountryRegion
 HAVING COUNT(*)>100
-ORDER BY CountryRegion DESC
-JOINing two tables together
-SELECT H.SalesOrderID, OrderDate, OrderQty
+ORDER BY CountryRegion DESC ```
+
+###JOINing two tables together
+
+```SELECT H.SalesOrderID, OrderDate, OrderQty
 FROM [SalesLT].[SalesOrderDetail] AS D
 JOIN [SalesLT].[SalesOrderHeader] AS H
 ON D.SalesOrderID = H.SalesOrderID
 Data Types
 SELECT N'Hi'
+```
 
 ### Determine the appropriate type of execution plan
 SET SHOWPLAN_TEXT OFF
