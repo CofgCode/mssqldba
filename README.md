@@ -9,24 +9,24 @@ SELECT * FROM sys.dm_db_resource_stats;
 -- For Azure SQL Managed Instance, use sys.server_resource_stats
 
 #-- Monitor connections
-SELECT * FROM sys.dm_exec_connections;				-- details about current instance or database connections
+-- details about current instance or database connections
+
+SELECT * FROM sys.dm_exec_connections;				
 
 
 #-- Index management
 -- counts of existing index operations
-
 SELECT * FROM sys.dm_db_index_usage_stats;			
 
 -- utilization of existing indexes
-SELECT * FROM sys.dm_db_index_operational_stats 
-						(NULL, NULL, NULL, NULL);	
--- last time statistics were updated for a specific index
+SELECT * FROM sys.dm_db_index_operational_stats (NULL, NULL, NULL, NULL);	
 
-SELECT * FROM sys.dm_db_stats_properties 
-						(1893581784, 1);	
+-- last time statistics were updated for a specific index
+SELECT * FROM sys.dm_db_stats_properties (1893581784, 1);	
+
 -- index fragmentation
-SELECT * FROM sys.dm_db_index_physical_stats
-					(NULL, NULL, NULL, NULL, NULL);	
+SELECT * FROM sys.dm_db_index_physical_stats	(NULL, NULL, NULL, NULL, NULL);	
+
 -- details for new and potentially useful indexes 
 SELECT * FROM sys.dm_db_missing_index_details;		
 
