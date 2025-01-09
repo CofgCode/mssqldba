@@ -52,7 +52,6 @@ SELECT * FROM sys.dm_os_wait_stats;
 -- waits for a given session, but not across sessions
 SELECT * FROM sys.dm_exec_session_wait_stats;		
 
-
- 
-# https://docs.microsoft.com/en-us/azure/azure-sql/database/monitoring-with-dmvs
+# Link Microsoft for monitoring views
+ -- https://docs.microsoft.com/en-us/azure/azure-sql/database/monitoring-with-dmvs
  
