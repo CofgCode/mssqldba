@@ -11,7 +11,8 @@ ORDER BY CountryRegion DESC
 
 ###JOINing two tables together
 
-```SELECT H.SalesOrderID, OrderDate, OrderQty
+```
+SELECT H.SalesOrderID, OrderDate, OrderQty
 FROM [SalesLT].[SalesOrderDetail] AS D
 JOIN [SalesLT].[SalesOrderHeader] AS H
 ON D.SalesOrderID = H.SalesOrderID
