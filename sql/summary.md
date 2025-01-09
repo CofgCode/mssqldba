@@ -1,4 +1,4 @@
-#Cached Query Plans  
+## Cached Query Plans  
 ## sys.dm_exec_cached_plans
 Returns a row for each query plan that is cached by SQL Server for faster query execution. You can use
 this dynamic management view to find cached query plans, cached query text, the amount of memory
@@ -9,7 +9,9 @@ Returns the text of the SQL batch that is identified by the specified sql_handle
 
 ## sys.dm_exec_query_plan_stats
 Returns the equivalent of the last known actual execution plan for a previously cached query plan.
-Queries with CPU times
+
+## Queries with CPU times
+
 ##  sys.dm_exec_query_stats
 Returns aggregate performance statistics for cached query plans in SQL Server. The view contains one
 row per query statement within the cached plan, and the lifetime of the rows are tied to the plan itself.
@@ -20,17 +22,20 @@ Returns aggregate performance statistics for cached stored procedures. The view 
 each cached stored procedure plan, and the lifetime of the row is as long as the stored procedure
 remains cached. When a stored procedure is removed from the cache, the corresponding row is
 eliminated from this view.
-Find still running sessions (right now)
+
+## Find still running sessions (right now)
 
 ## sys.dm_exec_requests
 Returns information about each request that is executing in SQL Server.
-Current active sessions right now
+
+### Current active sessions right now
 
 ## sys.dm_exec_connections
 Returns information about the connections established to this instance of SQL Server and the details of
 each connection. Returns server wide connection information for SQL Server. Returns current database
 connection information for SQL Database.
-Data and log I/O usage
+
+###Data and log I/O usage
 
 ## sys.dm_db_resource_stats (Azure SQL Database)
 Returns CPU, I/O, and memory consumption for an Azure SQL Database database or an Azure SQL
