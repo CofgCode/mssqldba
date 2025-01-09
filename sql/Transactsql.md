@@ -1,11 +1,13 @@
-### The SELECT statement
+## The SELECT statement
 
-```SELECT CountryRegion, COUNT(*) as NumberOfRows
+```
+SELECT CountryRegion, COUNT(*) as NumberOfRows
 FROM [SalesLT].[Address]
 WHERE ModifiedDate < '2010-01-01'
 GROUP BY CountryRegion
 HAVING COUNT(*)>100
-ORDER BY CountryRegion DESC ```
+ORDER BY CountryRegion DESC
+```
 
 ###JOINing two tables together
 
