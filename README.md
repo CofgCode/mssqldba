@@ -1,8 +1,9 @@
 # mssqldba
 
-#-- Dynamic Management Views for Azure SQL Database and SQL Server
+## Dynamic Management Views for Azure SQL Database and SQL Server
 
-#-- Monitor resource use
+## Monitor resource use
+
 SELECT * FROM sys.dm_db_resource_stats;				
 -- Azure SQL Database service tier usage statistics
 													
