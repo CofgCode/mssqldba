@@ -9,10 +9,11 @@ Returns the text of the SQL batch that is identified by the specified sql_handle
 
 ## sys.dm_exec_query_plan_stats
 Returns the equivalent of the last known actual execution plan for a previously cached query plan.
+
 '''SELECT *
 FROM sys.dm_exec_cached_plans AS cp
 CROSS APPLY sys.dm_exec_sql_text(plan_handle) AS st
-CROSS APPLY sys.dm_exec_query_plan_stats(plan_handle) AS qps;'
+CROSS APPLY sys.dm_exec_query_plan_stats(plan_handle) AS qps;'''
 
 ## Queries with CPU times
 
